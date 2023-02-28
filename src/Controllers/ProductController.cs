@@ -8,7 +8,7 @@ namespace Backend.src.Controllers
         { }
 
         [AllowAnonymous]
-        public override async Task<ActionResult<List<Product>>> GetAll(
+        public override async Task<ActionResult<List<ProductDto>>> GetAll(
             [FromQuery] int limit = 20,
             [FromQuery] int offset = 0,
             [FromQuery] string orderBy = "id asc"
@@ -18,7 +18,7 @@ namespace Backend.src.Controllers
         }
 
         [AllowAnonymous]
-        public override async Task<ActionResult<Product>> GetById(int id)
+        public override async Task<ActionResult<ProductDto>> GetById(int id)
         {
             return await base.GetById(id);
         }

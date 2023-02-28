@@ -14,7 +14,7 @@ namespace Backend.src.Services.BaseService
             _dbSet = context.Set<T>();
         }
 
-        public virtual async Task<List<T>> GetAllAsync(
+        public virtual async Task<List<TRead>> GetAllAsync(
             string orderBy, //For ex: "name asc"
             int limit,
             int offset
@@ -28,44 +28,47 @@ namespace Backend.src.Services.BaseService
             // Limit and offset
             query = query.Skip(offset).Take(limit);
 
-            return await query.ToListAsync();
+            return _mapper.Map<List<T>, List<TRead>>(await query.ToListAsync());
         }
 
-        public virtual async Task<T> GetByIdAsync(int id)
+        public virtual async Task<TRead> GetByIdAsync(int id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) throw ServiceException.NotFound($"Product with id {id} is not found");
-            return entity;
+            return _mapper.Map<T, TRead>(entity);
         }
 
-        public virtual async Task<T> AddOneAsync([FromBody] TCreate dto)
+        public virtual async Task<TRead> AddOneAsync([FromBody] TCreate dto)
         {
             var entity = _mapper.Map<T>(dto);
             _dbSet.Add(entity);
             await _context.SaveChangesAsync();
-            return entity;
+            return _mapper.Map<T, TRead>(entity);
         }
 
         public virtual async Task<bool> DeleteByIdAsync(int id)
         {
             var entity = await GetByIdAsync(id);
-            _dbSet.Remove(entity);
+            _dbSet.Remove(_mapper.Map<TRead, T>(entity));
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public virtual async Task<T> UpdateOneAsync(int id, [FromBody] TUpdate update)
+        public virtual async Task<TRead> UpdateOneAsync(int id, [FromBody] TUpdate? update)
         {
             var entity = await GetByIdAsync(id);
-            foreach (var property in update.GetType().GetProperties())
+            if (entity != null && update != null)
             {
-                if (property.GetValue(update) != null)
+                foreach (var property in update.GetType().GetProperties())
                 {
-                    entity.GetType().GetProperty(property.Name)!.SetValue(entity, property.GetValue(update));
+                    if (property.GetValue(update) != null)
+                    {
+                        entity.GetType().GetProperty(property.Name)!.SetValue(entity, property.GetValue(update));
+                    }
+                    Console.WriteLine(property.GetValue(update));
                 }
-                Console.WriteLine(property.GetValue(update));
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
             return entity;
         }
     }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Backend.src
@@ -23,11 +24,10 @@ namespace Backend.src
             foreach (var modelType in modelTypes)
             {
                 var dtoType = dtoTypes.FirstOrDefault(t => t.Name.StartsWith(modelType.Name) & t.Name.EndsWith("Dto"));
-
                 if (dtoType != null)
                 {
-                    CreateMap(modelType, dtoType);
                     CreateMap(dtoType, modelType);
+                    CreateMap(modelType, dtoType);
                 }
             }
         }

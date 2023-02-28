@@ -11,7 +11,7 @@ namespace Backend.src.Controllers
         }
 
         [Authorize(Policy = "AdminOnly")]
-        public override async Task<ActionResult<List<User>>> GetAll(
+        public override async Task<ActionResult<List<UserReadDto>>> GetAll(
                 [FromQuery] int limit = 20,
                 [FromQuery] int offset = 0,
                 [FromQuery] string orderBy = "id asc"
@@ -21,7 +21,7 @@ namespace Backend.src.Controllers
         }
 
         [AllowAnonymous]
-        public new async Task<ActionResult<User>> AddOne(UserCreateDto dto)
+        public override async Task<ActionResult<UserReadDto>> AddOne(UserCreateDto dto)
         {
             var createdEntity = await _service.AddOneAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = createdEntity.ID }, createdEntity);

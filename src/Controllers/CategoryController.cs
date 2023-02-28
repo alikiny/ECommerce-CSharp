@@ -15,7 +15,7 @@ namespace Backend.src.Controllers
         }
 
         [AllowAnonymous]
-        public override async Task<ActionResult<List<Category>>> GetAll(
+        public override async Task<ActionResult<List<CategoryDto>>> GetAll(
             [FromQuery] int limit = 20,
             [FromQuery] int offset = 0,
             [FromQuery] string orderBy = "id asc"

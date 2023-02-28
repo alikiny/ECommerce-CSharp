@@ -1,7 +1,8 @@
 namespace Backend.src.Dto
 {
-    public class ProductDto
+    public class ProductDto: BaseModel
     {
+        public int ID { get; set; }
         public string Title { get; set; }
         public long Description { get; set; }
         public int Price { get; set; }

@@ -8,6 +8,7 @@ namespace Backend.src.Controllers
     [Route("api/v1/[controller]s")]
     public class GenericController<TEntity, TReadDto, TCreateDto, TUpdateDto> : ControllerBase
     where TEntity : BaseModel
+    where TReadDto : BaseModel
     {
         private readonly IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> _service;
 
@@ -17,7 +18,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpGet("")]
-        public virtual async Task<ActionResult<List<TEntity>>> GetAll(
+        public virtual async Task<ActionResult<List<TReadDto>>> GetAll(
             [FromQuery] int limit = 20,
             [FromQuery] int offset = 0,
             [FromQuery] string orderBy = "id asc"
@@ -35,7 +36,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpGet("{id}")]
-        public virtual async Task<ActionResult<TEntity>> GetById(int id)
+        public virtual async Task<ActionResult<TReadDto>> GetById(int id)
         {
             try
             {
@@ -49,7 +50,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpPatch("{id}")]
-        public virtual async Task<ActionResult<TEntity>> UpdateOne(int id, TUpdateDto update)
+        public virtual async Task<ActionResult<TReadDto>> UpdateOne(int id, TUpdateDto? update)
         {
             try
             {

@@ -12,7 +12,7 @@ namespace Backend.src.Services.UserService
             _mapper = mapper;
         }
 
-        public new async Task<User> AddOneAsync(UserCreateDto dto)
+        public new async Task<UserReadDto> AddOneAsync(UserCreateDto dto)
         {
             ServiceHash.CreateHashData(dto.PasswordRaw, out byte[] passwordHash, out byte[] passwordSalt);
             if (CheckEmail(dto.Email)) throw ServiceException.BadRequest("Email is already taken");
@@ -21,7 +21,7 @@ namespace Backend.src.Services.UserService
             entity.Salt = passwordSalt;
             await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
-            return entity;
+            return _mapper.Map<User, UserReadDto>(entity);
         }
 
         private Boolean CheckEmail(string email)
