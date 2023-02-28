@@ -1,11 +1,13 @@
-using Backend.src.Services.BaseService;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.src.Controllers
 {
+    [Authorize]
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/[controller]s")]
     public class GenericController<TEntity, TDto> : ControllerBase
-    where TEntity:BaseModel
+    where TEntity : BaseModel
     {
         private readonly IBaseService<TEntity, TDto> _service;
 
@@ -15,7 +17,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpGet("")]
-        public async Task<ActionResult<List<TEntity>>> GetAll(
+        public virtual async Task<ActionResult<List<TEntity>>> GetAll(
             [FromQuery] int limit = 20,
             [FromQuery] int offset = 0,
             [FromQuery] string orderBy = "id asc"
@@ -33,7 +35,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TEntity>> GetById(int id)
+        public virtual async Task<ActionResult<TEntity>> GetById(int id)
         {
             try
             {
@@ -47,7 +49,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<TEntity>> UpdateOne(int id, TDto update)
+        public virtual async Task<ActionResult<TEntity>> UpdateOne(int id, TDto update)
         {
             try
             {
@@ -61,12 +63,12 @@ namespace Backend.src.Controllers
         }
 
         [HttpPost("")]
-        public async Task<ActionResult<TDto>> AddOne(TDto newOne)
+        public virtual async Task<ActionResult<TDto>> AddOne(TDto newOne)
         {
             try
             {
                 var createdEntity = await _service.AddOneAsync(newOne);
-                return CreatedAtAction(nameof(GetById), new{id = createdEntity.ID}, createdEntity);
+                return CreatedAtAction(nameof(GetById), new { id = createdEntity.ID }, createdEntity);
             }
             catch (ServiceException ex)
             {
@@ -75,7 +77,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> DeleteById(int id)
+        public virtual async Task<ActionResult<bool>> DeleteById(int id)
         {
             try
             {
@@ -92,11 +94,11 @@ namespace Backend.src.Controllers
         {
             switch (ex.HttpStatusCode)
             {
-                case 400:
+                case HttpStatusCode.BadRequest:
                     return BadRequest(ex.Message);
-                case 401:
+                case HttpStatusCode.Unauthorized:
                     return Unauthorized(ex.Message);
-                case 404:
+                case HttpStatusCode.NotFound:
                     return NotFound(ex.Message);
                 default:
                     return StatusCode(StatusCodes.Status500InternalServerError);

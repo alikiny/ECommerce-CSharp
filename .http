@@ -1,0 +1,54 @@
+###
+
+POST http://localhost:5058/api/v1/users
+content-type: application/json
+
+{
+  "firstName": "david",
+  "lastName": "lee",
+  "email": "david@mail.com",
+  "passwordRaw": "david",
+  "role": "Buyer"
+}
+
+###
+POST http://localhost:5058/api/v1/users
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxOCIsInVuaXF1ZV9uYW1lIjoiYWxpYUBtYWlsLmNvbSIsIm5iZiI6MTY3NzQ4MDI3NywiZXhwIjoxNjc4MDg1MDc3LCJpYXQiOjE2Nzc0ODAyNzd9.VREU3gkamZpK6bb1oAJnKQzTmaUxfKe1HXtk_J5qKdJ05f1EtrbqxtUIPM1wVB34zU2XcV4HWb2mtIQqSf6igA
+
+{
+  "firstName": "alia",
+  "lastName": "nguyen",
+  "email": "alia@mail.com",
+  "passwordRaw": "alia",
+  "role": "Admin"
+}
+
+### get all users with role Seller
+
+GET  http://localhost:5058/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMCIsInVuaXF1ZV9uYW1lIjoiZGF2aWRAbWFpbC5jb20iLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE2Nzc1NjkwMDUsImV4cCI6MTY3ODE3MzgwNSwiaWF0IjoxNjc3NTY5MDA1fQ.-H0QjqvCZ83Y27QEj3yOOM8Z0hjX1m7Q0Xe_df96JoDJ9qbKOUfzr0NygWME6d4AtX8ejQJGBFiJElUsnBNhHQ
+
+
+### get all users with role admin
+
+GET  http://localhost:5058/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxOCIsInVuaXF1ZV9uYW1lIjoiYWxpYUBtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTY3NzU2OTA1MywiZXhwIjoxNjc4MTczODUzLCJpYXQiOjE2Nzc1NjkwNTN9.u1ygKWeOuacOUCdLUMGfezR6unedOoPwUCJIoqIl8wOdfTWHXkUPk75e6vhtUKmXXlIt0u1CdLHt2Ja9XyOC5A
+
+###
+POST http://localhost:5058/api/v1/auth/login
+content-type: application/json
+
+{
+  "email": "alia@mail.com",
+  "passwordRaw": "alia"
+}
+
+###
+POST http://localhost:5058/api/v1/auth/login
+content-type: application/json
+
+{
+  "email": "david@mail.com",
+  "passwordRaw": "david"
+}

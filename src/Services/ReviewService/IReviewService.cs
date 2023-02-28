@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Backend.src.Services.ReviewService
 {
-    public interface ICategoryService : IBaseService<Category, CategoryDto>
+    public interface IReviewService : IBaseService<Review, ReviewDto>
     {
 
     }

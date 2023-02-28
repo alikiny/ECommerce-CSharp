@@ -7,7 +7,7 @@ namespace Backend.src.Controllers
 {
     public class OrderController : GenericController<Order, OrderDto>
     {
-        public OrderController(IBaseService<Order, OrderDto> service) : base(service)
+        public OrderController(IOrderService service) : base(service)
         {
         }
     }

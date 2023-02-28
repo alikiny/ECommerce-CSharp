@@ -1,37 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Backend.src.Helpers
 {
-    public class ServiceException : Exception
+    public sealed class ServiceException : Exception
     {
-        public int HttpStatusCode { get; private set; }
+        public HttpStatusCode HttpStatusCode { get; private set; }
 
-        public ServiceException(string message, int httpStatusCode) : base(message)
-        {
-            HttpStatusCode = httpStatusCode;
-        }
-
-        public ServiceException(string message, int httpStatusCode, Exception innerException) : base(message, innerException)
+        public ServiceException(string message, HttpStatusCode httpStatusCode) : base(message)
         {
             HttpStatusCode = httpStatusCode;
         }
 
         public static ServiceException BadRequest(string message)
         {
-            return new ServiceException(message, 400);
+            return new ServiceException(message, HttpStatusCode.BadRequest);
         }
 
         public static ServiceException Unauthorized(string message)
         {
-            return new ServiceException(message, 401);
+            return new ServiceException(message, HttpStatusCode.Unauthorized);
         }
 
         public static ServiceException NotFound(string message)
         {
-            return new ServiceException(message, 404);
+            return new ServiceException(message, HttpStatusCode.NotFound);
+        }
+
+        public static ServiceException NullOrEmpty(string message)
+        {
+            return new ServiceException(message, HttpStatusCode.NoContent);
+        }
+
+        public static ServiceException Forbidden(string message)
+        {
+            return new ServiceException(message, HttpStatusCode.Forbidden);
         }
     }
 }

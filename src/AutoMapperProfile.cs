@@ -22,7 +22,7 @@ namespace Backend.src
                 .ToList();
             foreach (var modelType in modelTypes)
             {
-                var dtoType = dtoTypes.FirstOrDefault(t => t.Name == modelType.Name + "Dto");
+                var dtoType = dtoTypes.FirstOrDefault(t => t.Name.StartsWith(modelType.Name) & t.Name.EndsWith("Dto"));
 
                 if (dtoType != null)
                 {

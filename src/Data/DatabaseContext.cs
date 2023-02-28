@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace Backend.src.Data
 {
     public class DatabaseContext : DbContext
@@ -8,6 +5,9 @@ namespace Backend.src.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         { }
@@ -83,6 +83,12 @@ namespace Backend.src.Data
             modelBuilder.Entity<Category>()
                 .HasIndex(c => c.Name)
                 .IsUnique();
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+            .UseSnakeCaseNamingConvention();
         }
     }
 }

@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Backend.src.Services.ReviewService
 {
-    public class ReviewService : BaseService<Category, CategoryDto>, ICategoryService
-    {
+    public class ReviewService : BaseService<Review, ReviewDto>, IReviewService
+    {  
         public ReviewService(IMapper mapper, DatabaseContext context) : base(mapper, context)
         {
         }

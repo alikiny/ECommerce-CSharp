@@ -1,7 +1,3 @@
-using AutoMapper;
-using Backend.src.Data;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-
 namespace Backend.src.Services.BaseService
 {
     public class BaseService<TEntity, TDto> : IBaseService<TEntity, TDto>
@@ -19,7 +15,7 @@ namespace Backend.src.Services.BaseService
             _dbSet = context.Set<TEntity>();
         }
 
-        public async Task<List<TEntity>> GetAllAsync(
+        public virtual async Task<List<TEntity>> GetAllAsync(
             string orderBy, //For ex: "name asc"
             int limit,
             int offset
@@ -36,22 +32,23 @@ namespace Backend.src.Services.BaseService
             return await query.ToListAsync();
         }
 
-        public async Task<TEntity> GetByIdAsync(int id)
+        public virtual async Task<TEntity> GetByIdAsync(int id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) throw ServiceException.NotFound($"Product with id {id} is not found");
             return entity;
         }
 
-        public async Task<TEntity> AddOneAsync(TDto dto)
+        public virtual async Task<TEntity> AddOneAsync(TDto dto)
         {
+            throw new Exception("test error in base service");
             var entity = _mapper.Map<TEntity>(dto);
             _dbSet.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<bool> DeleteByIdAsync(int id)
+        public virtual async Task<bool> DeleteByIdAsync(int id)
         {
             var entity = await GetByIdAsync(id);
             _dbSet.Remove(entity);
@@ -59,7 +56,7 @@ namespace Backend.src.Services.BaseService
             return true;
         }
 
-        public async Task<TEntity> UpdateOneAsync(int id, TDto update)
+        public virtual async Task<TEntity> UpdateOneAsync(int id, TDto update)
         {
             var entity = await GetByIdAsync(id);
             _mapper.Map(update, entity);

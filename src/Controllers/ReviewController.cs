@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Backend.src.Services.ReviewService;
 
 namespace Backend.src.Controllers
 {
     public class ReviewController : GenericController<Review, ReviewDto>
     {
-        public ReviewController(IBaseService<Review, ReviewDto> service) : base(service)
+        public ReviewController(IReviewService service) : base(service)
         {
         }
     }
