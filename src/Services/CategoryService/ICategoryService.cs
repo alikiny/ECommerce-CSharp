@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Backend.src.Services.CategoryService
 {
-    public interface ICategoryService: IBaseService<Category, CategoryDto>
+    public interface ICategoryService: IBaseService<Category, CategoryDto, CategoryDto, CategoryDto>
     {
         
     }

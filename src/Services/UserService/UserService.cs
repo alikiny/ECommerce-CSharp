@@ -1,7 +1,7 @@
 
 namespace Backend.src.Services.UserService
 {
-    public class UserService : BaseService<User, UserDto>, IUserService
+    public class UserService : BaseService<User, UserReadDto, UserCreateDto, UserUpdateDto>, IUserService
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
@@ -12,7 +12,7 @@ namespace Backend.src.Services.UserService
             _mapper = mapper;
         }
 
-        public override async Task<User> AddOneAsync(UserDto dto)
+        public new async Task<User> AddOneAsync(UserCreateDto dto)
         {
             ServiceHash.CreateHashData(dto.PasswordRaw, out byte[] passwordHash, out byte[] passwordSalt);
             if (CheckEmail(dto.Email)) throw ServiceException.BadRequest("Email is already taken");

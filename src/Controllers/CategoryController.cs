@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Backend.src.Controllers
 {
     [Route("api/v1/categories")]
-    public class CategoryController : GenericController<Category, CategoryDto>
+    public class CategoryController : GenericController<Category, CategoryDto,CategoryDto,CategoryDto>
     {
         public CategoryController(ICategoryService service) : base(service)
         {

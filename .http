@@ -24,6 +24,18 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxOCIsI
   "role": "Admin"
 }
 
+###
+
+PATCH http://localhost:5058/api/v1/users/1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxOCIsInVuaXF1ZV9uYW1lIjoiYWxpYUBtYWlsLmNvbSIsIm5iZiI6MTY3NzQ4MDI3NywiZXhwIjoxNjc4MDg1MDc3LCJpYXQiOjE2Nzc0ODAyNzd9.VREU3gkamZpK6bb1oAJnKQzTmaUxfKe1HXtk_J5qKdJ05f1EtrbqxtUIPM1wVB34zU2XcV4HWb2mtIQqSf6igA
+
+{
+  "firstName": "alia",
+  "lastName": "ny"
+}
+
+
 ### get all users with role Seller
 
 GET  http://localhost:5058/api/v1/users

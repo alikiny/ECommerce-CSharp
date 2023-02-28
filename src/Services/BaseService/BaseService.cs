@@ -1,21 +1,20 @@
 namespace Backend.src.Services.BaseService
 {
-    public class BaseService<TEntity, TDto> : IBaseService<TEntity, TDto>
-    where TEntity : class
-    where TDto : class
+    public class BaseService<T, TRead, TCreate, TUpdate> : IBaseService<T, TRead, TCreate, TUpdate>
+    where T : class
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
-        private DbSet<TEntity> _dbSet { get; }
+        private DbSet<T> _dbSet { get; }
 
         public BaseService(IMapper mapper, DatabaseContext context)
         {
             _context = context;
             _mapper = mapper;
-            _dbSet = context.Set<TEntity>();
+            _dbSet = context.Set<T>();
         }
 
-        public virtual async Task<List<TEntity>> GetAllAsync(
+        public virtual async Task<List<T>> GetAllAsync(
             string orderBy, //For ex: "name asc"
             int limit,
             int offset
@@ -32,17 +31,16 @@ namespace Backend.src.Services.BaseService
             return await query.ToListAsync();
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) throw ServiceException.NotFound($"Product with id {id} is not found");
             return entity;
         }
 
-        public virtual async Task<TEntity> AddOneAsync(TDto dto)
+        public virtual async Task<T> AddOneAsync([FromBody] TCreate dto)
         {
-            throw new Exception("test error in base service");
-            var entity = _mapper.Map<TEntity>(dto);
+            var entity = _mapper.Map<T>(dto);
             _dbSet.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
@@ -56,10 +54,17 @@ namespace Backend.src.Services.BaseService
             return true;
         }
 
-        public virtual async Task<TEntity> UpdateOneAsync(int id, TDto update)
+        public virtual async Task<T> UpdateOneAsync(int id, [FromBody] TUpdate update)
         {
             var entity = await GetByIdAsync(id);
-            _mapper.Map(update, entity);
+            foreach (var property in update.GetType().GetProperties())
+            {
+                if (property.GetValue(update) != null)
+                {
+                    entity.GetType().GetProperty(property.Name)!.SetValue(entity, property.GetValue(update));
+                }
+                Console.WriteLine(property.GetValue(update));
+            }
             await _context.SaveChangesAsync();
             return entity;
         }

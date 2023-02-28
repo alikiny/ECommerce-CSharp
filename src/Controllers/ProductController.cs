@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.src.Controllers
 {
-    public class ProductController : GenericController<Product, ProductDto>
+    public class ProductController : GenericController<Product, ProductDto, ProductDto, ProductDto>
     {
-        public ProductController(IProductService productService): base(productService)
+        public ProductController(IProductService productService) : base(productService)
         { }
 
         [AllowAnonymous]

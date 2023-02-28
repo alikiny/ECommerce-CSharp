@@ -1,6 +1,6 @@
 namespace Backend.src.Services.OrderService
 {
-    public interface IOrderService: IBaseService<Order, OrderDto>
+    public interface IOrderService: IBaseService<Order, OrderDto, OrderDto, OrderDto>
     {
         
     }

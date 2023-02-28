@@ -6,12 +6,12 @@ namespace Backend.src.Controllers
     [Authorize]
     [ApiController]
     [Route("api/v1/[controller]s")]
-    public class GenericController<TEntity, TDto> : ControllerBase
+    public class GenericController<TEntity, TReadDto, TCreateDto, TUpdateDto> : ControllerBase
     where TEntity : BaseModel
     {
-        private readonly IBaseService<TEntity, TDto> _service;
+        private readonly IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> _service;
 
-        public GenericController(IBaseService<TEntity, TDto> service)
+        public GenericController(IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> service)
         {
             _service = service;
         }
@@ -49,7 +49,7 @@ namespace Backend.src.Controllers
         }
 
         [HttpPatch("{id}")]
-        public virtual async Task<ActionResult<TEntity>> UpdateOne(int id, TDto update)
+        public virtual async Task<ActionResult<TEntity>> UpdateOne(int id, TUpdateDto update)
         {
             try
             {
@@ -63,11 +63,11 @@ namespace Backend.src.Controllers
         }
 
         [HttpPost("")]
-        public virtual async Task<ActionResult<TDto>> AddOne(TDto newOne)
+        public virtual async Task<ActionResult<TReadDto>> AddOne(TCreateDto dto)
         {
             try
             {
-                var createdEntity = await _service.AddOneAsync(newOne);
+                var createdEntity = await _service.AddOneAsync(dto);
                 return CreatedAtAction(nameof(GetById), new { id = createdEntity.ID }, createdEntity);
             }
             catch (ServiceException ex)

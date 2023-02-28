@@ -14,7 +14,7 @@ namespace Backend.src.Milddlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            _logger.LogInformation($"Requiest url : {context.Request.Path}");
+            _logger.LogInformation($"Request url : {context.Request.Path}, method: {context.Request.Method}");
             await _next(context);
         }
     }
