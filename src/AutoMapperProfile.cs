@@ -23,11 +23,11 @@ namespace Backend.src
                 .ToList();
             foreach (var modelType in modelTypes)
             {
-                var dtoType = dtoTypes.FirstOrDefault(t => t.Name.StartsWith(modelType.Name) & t.Name.EndsWith("Dto"));
-                if (dtoType != null)
+                var matchTypes = dtoTypes.FindAll(t => t.Name.StartsWith(modelType.Name) & t.Name.EndsWith("Dto"));
+                foreach (var matchType in matchTypes)
                 {
-                    CreateMap(dtoType, modelType);
-                    CreateMap(modelType, dtoType);
+                    CreateMap(matchType, modelType);
+                    CreateMap(modelType, matchType);
                 }
             }
         }

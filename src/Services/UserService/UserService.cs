@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Identity;
+
 namespace Backend.src.Services.UserService
 {
     public class UserService : BaseService<User, UserReadDto, UserCreateDto, UserUpdateDto>, IUserService
