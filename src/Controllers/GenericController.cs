@@ -8,7 +8,6 @@ namespace Backend.src.Controllers
     [Route("api/v1/[controller]s")]
     public class GenericController<TEntity, TReadDto, TCreateDto, TUpdateDto> : ControllerBase
     where TEntity : BaseModel
-    where TReadDto : BaseModel
     {
         private readonly IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> _service;
 
@@ -69,7 +68,7 @@ namespace Backend.src.Controllers
             try
             {
                 var createdEntity = await _service.AddOneAsync(dto);
-                return CreatedAtAction(nameof(GetById), new { id = createdEntity.ID }, createdEntity);
+                return CreatedAtAction(nameof(GetById), createdEntity);
             }
             catch (ServiceException ex)
             {

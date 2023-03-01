@@ -97,6 +97,7 @@ internal class Program
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("SellerOnly", policy => policy.RequireRole("Seller"));
         });
 
         var app = builder.Build();

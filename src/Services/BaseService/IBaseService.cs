@@ -1,11 +1,11 @@
 namespace Backend.src.Services.BaseService
 {
-    public interface IBaseService<T, TRead, TCreate, TUpdate>
+    public interface IBaseService<T, TReadDto, TCreateDto, TUpdateDto>
     {
-        Task<List<TRead>> GetAllAsync(string orderBy, int limit, int offset);
-        Task<TRead> GetByIdAsync(int id);
-        Task<TRead> AddOneAsync(TCreate dto);
+        Task<List<TReadDto>> GetAllAsync(string orderBy, int limit, int offset);
+        Task<TReadDto> GetByIdAsync(int id);
+        Task<TReadDto> AddOneAsync(TCreateDto dto);
         Task<bool> DeleteByIdAsync(int id);
-        Task<TRead> UpdateOneAsync(int id, TUpdate? update);
+        Task<TReadDto> UpdateOneAsync(int id, TUpdateDto? update);
     }
 }

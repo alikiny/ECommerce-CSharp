@@ -1,6 +1,6 @@
 namespace Backend.src.Dto
 {
-    public class UserDtoBase: BaseModel
+    public class UserDtoBase
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

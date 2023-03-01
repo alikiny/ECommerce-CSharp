@@ -22,5 +22,12 @@ namespace Backend.src.Controllers
         {
             return await base.GetById(id);
         }
+
+        [Authorize(Policy = "SellerOnly")]
+        public override async Task<ActionResult<ProductDto>> AddOne(ProductDto dto)
+        {
+            return await base.AddOne(dto);
+        }
+
     }
 }
