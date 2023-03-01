@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Backend.src.Models
 {
     public class Review : BaseModel

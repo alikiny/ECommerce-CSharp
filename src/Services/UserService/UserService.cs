@@ -1,6 +1,3 @@
-
-using Microsoft.AspNetCore.Identity;
-
 namespace Backend.src.Services.UserService
 {
     public class UserService : BaseService<User, UserReadDto, UserCreateDto, UserUpdateDto>, IUserService
@@ -16,9 +13,9 @@ namespace Backend.src.Services.UserService
 
         public new async Task<UserReadDto> AddOneAsync(UserCreateDto dto)
         {
-            ServiceHash.CreateHashData(dto.PasswordRaw, out byte[] passwordHash, out byte[] passwordSalt);
+            ServiceHash.CreateHashData(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
             if (CheckEmail(dto.Email)) throw ServiceException.BadRequest("Email is already taken");
-            var entity = _mapper.Map<User>(dto);
+            var entity = _mapper.Map<UserCreateDto, User>(dto);
             entity.Password = passwordHash;
             entity.Salt = passwordSalt;
             await _context.AddAsync(entity);

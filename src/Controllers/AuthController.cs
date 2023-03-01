@@ -1,10 +1,4 @@
-using System.Net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Backend.src.Services.AuthService;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.src.Controllers
 {
@@ -23,7 +17,7 @@ namespace Backend.src.Controllers
         [HttpPost("login")]
         public async Task<string> Login(UserAuthDto dto)
         {
-            var token = await _authService.LogInAsync(dto.Email, dto.PasswordRaw);
+            var token = await _authService.LogInAsync(dto.Email, dto.Password);
             return token;
         }
 

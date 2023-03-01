@@ -4,11 +4,11 @@ POST http://localhost:5058/api/v1/users
 content-type: application/json
 
 {
-  "firstName": "nina",
-  "lastName": "lakiza",
-  "email": "nina@mail.com",
-  "passwordRaw": "nina",
-  "role": "Seller"
+  "firstName": "Seal",
+  "lastName": "Biane",
+  "email": "seal@mail.com",
+  "password": "seal",
+  "role": "Buyer"
 }
 
 ###
@@ -53,7 +53,7 @@ content-type: application/json
 
 {
   "email": "alia@mail.com",
-  "passwordRaw": "alia"
+  "password": "alia"
 }
 
 ###

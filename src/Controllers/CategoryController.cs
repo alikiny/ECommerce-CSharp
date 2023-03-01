@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Backend.src.Services.CategoryService;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.src.Controllers

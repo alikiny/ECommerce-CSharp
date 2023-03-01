@@ -12,6 +12,7 @@ global using Backend.src.Services.BaseService;
 global using Backend.src.Services.UserService;
 global using Backend.src.Services.OrderService;
 global using Backend.src.Services.OrderItemService;
+global using Backend.src.Services.CategoryService;
 global using Backend.src.Dto;
 global using Backend.src.Helpers;
 global using Backend.src.Models;

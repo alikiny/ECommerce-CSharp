@@ -23,13 +23,19 @@ namespace Backend.src
                 .ToList();
             foreach (var modelType in modelTypes)
             {
-                var matchTypes = dtoTypes.FindAll(t => t.Name.StartsWith(modelType.Name) & t.Name.EndsWith("Dto"));
+                var matchTypes = dtoTypes.FindAll(t => 
+                t.Name.StartsWith(modelType.Name) &
+                t.Name.EndsWith("Dto") &
+                t.Name != "UserCreateDto");
                 foreach (var matchType in matchTypes)
                 {
                     CreateMap(matchType, modelType);
                     CreateMap(modelType, matchType);
                 }
             }
+
+            //ignore mapping property Password from UserCreateDto to UserDto because of incompatible type
+            CreateMap<UserCreateDto, User>().ForMember(user => user.Password, opt => opt.Ignore());
         }
     }
 }
