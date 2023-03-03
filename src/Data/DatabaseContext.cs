@@ -1,7 +1,16 @@
+using System.IO.Pipes;
+using System.Reflection.Emit;
+using Backend.src.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql;
+
 namespace Backend.src.Data
 {
     public class DatabaseContext : DbContext
     {
+        private readonly IConfiguration _config;
+
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -9,11 +18,22 @@ namespace Backend.src.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
 
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
-        { }
+        static DatabaseContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
+        public DatabaseContext(DbContextOptions<DatabaseContext> options, IConfiguration config) : base(options)
+        {
+            _config = config;
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.HasPostgresEnum<Role>();
+            modelBuilder.HasPostgresEnum<Paid>();
+            modelBuilder.HasPostgresEnum<Rating>();
 
             /* Configure Review model */
             modelBuilder.Entity<Review>(
@@ -31,8 +51,7 @@ namespace Backend.src.Data
                         .OnDelete(DeleteBehavior.Cascade);
                     entity
                         .Property(e => e.Rating)
-                        .HasAnnotation("MinValue", Rating.One)
-                        .HasAnnotation("MaxValue", Rating.Five);
+                        .HasColumnType("rating");
                 }
             );
 
@@ -53,12 +72,25 @@ namespace Backend.src.Data
                 }
             );
 
+            modelBuilder.Entity<User>(
+                entity =>
+                {
+                    entity
+                        .Property(e => e.Role)
+                        .HasColumnType("role");
+                }
+            );
+
             /* Configure Order model */
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.User)
-                .WithMany()
-                .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Order>(
+                entity =>
+                {
+                    entity
+                        .HasOne(o => o.User)
+                        .WithMany()
+                        .HasForeignKey(r => r.UserId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
 
             /* Configure OrderItem model*/
             modelBuilder.Entity<OrderItem>(
@@ -87,7 +119,12 @@ namespace Backend.src.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(_config.GetConnectionString("DefaultConnection"));
+            dataSourceBuilder.MapEnum<Rating>();
+            dataSourceBuilder.MapEnum<Role>();
+            dataSourceBuilder.MapEnum<Paid>();
             optionsBuilder
+            .UseNpgsql(dataSourceBuilder.ConnectionString)
             .UseSnakeCaseNamingConvention();
         }
     }

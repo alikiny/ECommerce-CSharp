@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Backend.src.Models
 {
     public class User : BaseModel
@@ -9,5 +11,13 @@ namespace Backend.src.Models
         public byte[] Salt { get; set; }
         public Role Role { get; set; }
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum Role
+    {
+        Admin,
+        Buyer,
+        Seller
     }
 }

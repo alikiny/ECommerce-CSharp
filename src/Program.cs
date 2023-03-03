@@ -77,8 +77,7 @@ internal class Program
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
         //Add DatabaseContext
-        builder.Services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<DatabaseContext>();
 
         // Add authentication service
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
