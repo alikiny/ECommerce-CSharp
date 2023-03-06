@@ -25,12 +25,25 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Backend.src.Services.ReviewService;
 using Backend.src.Milddlewares;
+using Backend.src.Services.PermissionRequirement;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Services;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.WebHost.UseKestrel(options =>
+        {
+            options.ListenLocalhost(5000);
+            // Set HTTPS port
+            options.ListenLocalhost(5001, listenOptions =>
+            {
+                listenOptions.UseHttps();
+            });
+        });
         builder.Services.Configure<RouteOptions>(options =>
         {
             options.LowercaseUrls = true;
@@ -69,7 +82,10 @@ internal class Program
             .AddScoped<IOrderService, OrderService>()
             .AddScoped<IOrderItemService, OrderItemService>()
             .AddScoped<IReviewService, ReviewService>()
-            .AddScoped<IAuthService, AuthService>();
+            .AddScoped<IAuthService, AuthService>()
+            .AddScoped<ICategoryService, CategoryService>();
+
+        builder.Services.AddTransient<IAuthorizationHandler, ProductDeleteRequirementHandler>();
 
         //builder.Services.AddTransient<LoggingMiddleware>();
 
@@ -95,27 +111,28 @@ internal class Program
         // Add authorization service
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-            options.AddPolicy("SellerOnly", policy => policy.RequireRole("Seller"));
+            options.AddPolicy("AdminOnlyPolicy", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("SellerOnlyPolicy", policy => policy.RequireRole("Seller"));
+            options.AddPolicy("ProductDeletePolicy", policy => policy.AddRequirements(new PermissionRequirement()));
         });
 
         var app = builder.Build();
 
+        app.UseHttpsRedirection();
         // Configure the HTTP request pipeline.S
-        if (app.Environment.IsDevelopment())
+        /*         if (app.Environment.IsDevelopment())
+                { */
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend API");
-                c.RoutePrefix = string.Empty;
-            });
-        }
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend API");
+            c.RoutePrefix = string.Empty;
+        });
+        /*   } */
 
         // app.UseMiddleware<LoggingMiddleware>();
-        app.UseLogging();
 
-        app.UseHttpsRedirection();
+        app.UseLogging();
 
         app.UseAuthentication();
 

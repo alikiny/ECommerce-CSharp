@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace Backend.src.Models
 {
@@ -13,6 +14,7 @@ namespace Backend.src.Models
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 
+    [PgName("role")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Role
     {

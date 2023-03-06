@@ -8,10 +8,10 @@ namespace Backend.src.Models
         public string Description { get; set; }
         public int Price { get; set; }
         public int CategoryID { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
         public int SellerId { get; init; }
-        public User User { get; init; }
+        public virtual User User { get; init; }
         public int Inventory { get; set; }
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

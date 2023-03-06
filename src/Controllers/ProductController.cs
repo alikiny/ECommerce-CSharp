@@ -8,13 +8,9 @@ namespace Backend.src.Controllers
         { }
 
         [AllowAnonymous]
-        public override async Task<ActionResult<List<ProductReadDto>>> GetAll(
-            [FromQuery] int limit = 20,
-            [FromQuery] int offset = 0,
-            [FromQuery] string orderBy = "id asc"
-        )
+        public override async Task<ActionResult<List<ProductReadDto>>> GetAll([FromQuery] GetAllQueryOptions options)
         {
-            return await base.GetAll(limit, offset, orderBy);
+            return await base.GetAll(options);
         }
 
         [AllowAnonymous]
@@ -23,11 +19,16 @@ namespace Backend.src.Controllers
             return await base.GetById(id);
         }
 
-        [Authorize(Policy = "SellerOnly")]
+        [Authorize(Policy = "SellerOnlyPolicy")]
         public override async Task<ActionResult<ProductReadDto>> AddOne(ProductCreateDto dto)
         {
             return await base.AddOne(dto);
         }
 
+        [Authorize(Policy = "ProductDeletePolicy")]
+        public override async Task<ActionResult<ProductReadDto>> UpdateOne(int id, ProductUpdateDto update)
+        {
+            return await base.UpdateOne(id, update);
+        }
     }
 }

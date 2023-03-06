@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace Backend.src.Models
 {
@@ -8,11 +9,12 @@ namespace Backend.src.Models
         public string Description { get; set; } = string.Empty;
         public Rating Rating { get; set; }
         public int UserId { get; set; }
-        public int ProductId { get; set; }   
+        public int ProductId { get; set; }
         public User User { get; set; }
         public Product Product { get; set; }
     }
 
+    [PgName("rating")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Rating
     {

@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore.Internal;
-using Swashbuckle.AspNetCore.SwaggerGen;
-
 namespace Backend.src.Services.BaseService
 {
     public class BaseService<T, TReadDto, TCreateDto, TUpdateDto> : IBaseService<T, TReadDto, TCreateDto, TUpdateDto>
@@ -17,19 +14,13 @@ namespace Backend.src.Services.BaseService
             _dbSet = context.Set<T>();
         }
 
-        public virtual async Task<List<TReadDto>> GetAllAsync(
-            string orderBy, //For ex: "name asc"
-            int limit,
-            int offset
-            )
+        public virtual async Task<List<TReadDto>> GetAllAsync(GetAllQueryOptions options)
         {
             var query = _dbSet.AsQueryable();
             // Sorting
-            var property = orderBy.Split(" ")[0];
-            var order = orderBy.Split(" ")[1];
-            query = from p in query orderby $"{property} {order}" select p;
+            query = from p in query orderby $"{options.Order} {options.OrderBy}" select p;
             // Limit and offset
-            query = query.Skip(offset).Take(limit);
+            query = query.Skip(options.Offset).Take(options.Limit);
 
             return _mapper.Map<List<T>, List<TReadDto>>(await query.ToListAsync());
         }

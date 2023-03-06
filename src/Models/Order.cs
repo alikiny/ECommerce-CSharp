@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace Backend.src.Models
 {
@@ -9,6 +10,7 @@ namespace Backend.src.Models
         public Paid Status { get; set; }
     }
 
+    [PgName("paid")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Paid
     {

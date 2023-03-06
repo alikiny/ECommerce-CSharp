@@ -9,6 +9,7 @@ namespace Backend.src.Data
 {
     public class DatabaseContext : DbContext
     {
+        static NpgsqlDataSource dataTest;
         private readonly IConfiguration _config;
 
         public DbSet<Product> Products { get; set; }
@@ -20,6 +21,7 @@ namespace Backend.src.Data
 
         static DatabaseContext()
         {
+            
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
@@ -90,6 +92,9 @@ namespace Backend.src.Data
                         .WithMany()
                         .HasForeignKey(r => r.UserId)
                         .OnDelete(DeleteBehavior.Cascade);
+                    entity
+                        .Property(e => e.Status)
+                        .HasColumnType("paid");
                 });
 
             /* Configure OrderItem model*/
@@ -120,11 +125,12 @@ namespace Backend.src.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(_config.GetConnectionString("DefaultConnection"));
-            dataSourceBuilder.MapEnum<Rating>();
-            dataSourceBuilder.MapEnum<Role>();
-            dataSourceBuilder.MapEnum<Paid>();
+            dataSourceBuilder.MapEnum<Rating>("rating");
+            dataSourceBuilder.MapEnum<Role>("role");
+            dataSourceBuilder.MapEnum<Paid>("paid");
+            var dataSource = dataSourceBuilder.Build();
             optionsBuilder
-            .UseNpgsql(dataSourceBuilder.ConnectionString)
+            .UseNpgsql(dataSource)
             .UseSnakeCaseNamingConvention();
         }
     }

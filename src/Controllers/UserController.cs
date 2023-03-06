@@ -10,14 +10,10 @@ namespace Backend.src.Controllers
             _service = service;
         }
 
-        [Authorize(Policy = "AdminOnly")]
-        public override async Task<ActionResult<List<UserReadDto>>> GetAll(
-                [FromQuery] int limit = 20,
-                [FromQuery] int offset = 0,
-                [FromQuery] string orderBy = "id asc"
-            )
+        [Authorize(Policy = "AdminOnlyPolicy")]
+        public override async Task<ActionResult<List<UserReadDto>>> GetAll([FromQuery] GetAllQueryOptions options)
         {
-            return await base.GetAll(limit, offset, orderBy);
+            return await base.GetAll(options);
         }
 
         [AllowAnonymous]

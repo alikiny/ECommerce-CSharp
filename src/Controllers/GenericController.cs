@@ -17,15 +17,11 @@ namespace Backend.src.Controllers
         }
 
         [HttpGet("")]
-        public virtual async Task<ActionResult<List<TReadDto>>> GetAll(
-            [FromQuery] int limit = 20,
-            [FromQuery] int offset = 0,
-            [FromQuery] string orderBy = "id asc"
-        )
+        public virtual async Task<ActionResult<List<TReadDto>>> GetAll([FromQuery] GetAllQueryOptions options)
         {
             try
             {
-                var response = Ok(await _service.GetAllAsync(orderBy, limit, offset));
+                var response = Ok(await _service.GetAllAsync(options));
                 return response;
             }
             catch (ServiceException ex)
@@ -40,7 +36,7 @@ namespace Backend.src.Controllers
             try
             {
                 var response = await _service.GetByIdAsync(id);
-                return response;
+                return Ok(response);
             }
             catch (ServiceException ex)
             {
@@ -49,12 +45,12 @@ namespace Backend.src.Controllers
         }
 
         [HttpPatch("{id}")]
-        public virtual async Task<ActionResult<TReadDto>> UpdateOne(int id, TUpdateDto? update)
+        public virtual async Task<ActionResult<TReadDto>> UpdateOne(int id, TUpdateDto update)
         {
             try
             {
                 var response = await _service.UpdateOneAsync(id, update);
-                return response;
+                return Ok(response);
             }
             catch (ServiceException ex)
             {
@@ -68,7 +64,7 @@ namespace Backend.src.Controllers
             try
             {
                 var createdEntity = await _service.AddOneAsync(dto);
-                return CreatedAtAction(nameof(GetById), createdEntity);
+                return CreatedAtAction(nameof(AddOne), createdEntity);
             }
             catch (ServiceException ex)
             {
