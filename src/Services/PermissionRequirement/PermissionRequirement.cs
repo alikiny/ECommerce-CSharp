@@ -10,10 +10,11 @@ namespace Backend.src.Services.PermissionRequirement
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement, Product resource)
         {
+            Console.WriteLine(resource.SellerId.ToString());
             if(context.User.IsInRole(Role.Admin.ToString()))
             {
                 context.Succeed(requirement);
-            } else if(context.User.FindFirstValue("NameIdentifier") == resource.SellerId.ToString())
+            } else if(context.User.FindFirstValue(ClaimTypes.NameIdentifier) == resource.SellerId.ToString())
             {
                 context.Succeed(requirement);
             }

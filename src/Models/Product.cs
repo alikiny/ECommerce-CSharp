@@ -9,7 +9,7 @@ namespace Backend.src.Models
         public int Price { get; set; }
         public int CategoryID { get; set; }
         public virtual Category Category { get; set; }
-        public int SellerId { get; init; }
+        public int SellerId { get; set; }
         public virtual User User { get; init; }
         public int Inventory { get; set; }
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();

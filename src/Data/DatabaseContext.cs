@@ -1,8 +1,3 @@
-using System.IO.Pipes;
-using System.Reflection.Emit;
-using Backend.src.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql;
 
 namespace Backend.src.Data

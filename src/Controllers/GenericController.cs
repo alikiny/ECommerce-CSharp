@@ -9,8 +9,7 @@ namespace Backend.src.Controllers
     public class GenericController<TEntity, TReadDto, TCreateDto, TUpdateDto> : ControllerBase
     where TEntity : BaseModel
     {
-        private readonly IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> _service;
-
+        protected readonly IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> _service;
         public GenericController(IBaseService<TEntity, TReadDto, TCreateDto, TUpdateDto> service)
         {
             _service = service;

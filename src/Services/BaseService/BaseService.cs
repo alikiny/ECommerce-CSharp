@@ -4,9 +4,9 @@ namespace Backend.src.Services.BaseService
         : IBaseService<T, TReadDto, TCreateDto, TUpdateDto>
         where T : BaseModel
     {
-        private readonly DatabaseContext _context;
-        private readonly IMapper _mapper;
-        private DbSet<T> _dbSet { get; }
+        protected readonly DatabaseContext _context;
+        protected readonly IMapper _mapper;
+        protected readonly DbSet<T> _dbSet;
 
         public BaseService(IMapper mapper, DatabaseContext context)
         {
@@ -31,7 +31,7 @@ namespace Backend.src.Services.BaseService
             return _mapper.Map<T, TReadDto>(entity);
         }
 
-        public virtual async Task<TReadDto> AddOneAsync([FromBody] TCreateDto dto)
+        public virtual async Task<TReadDto> AddOneAsync(TCreateDto dto)
         {
             var entity = _mapper.Map<T>(dto);
             _dbSet.Add(entity);
@@ -50,7 +50,7 @@ namespace Backend.src.Services.BaseService
         public virtual async Task<TReadDto> UpdateOneAsync(int id, TUpdateDto update)
         {
             var entity = await FindByIdAsync(id);
-            foreach (var property in update.GetType().GetProperties())
+            foreach (var property in update!.GetType().GetProperties())
             {
                 if (
                     !string.IsNullOrEmpty((string?)property.GetValue(update))

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Backend.src.Repository.ProductRepository;
 using Microsoft.AspNetCore.Authorization;
 
@@ -8,19 +9,18 @@ namespace Backend.src.Controllers
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly IProductRepository _productRepository;
-        private readonly IHttpContextAccessor _context;
+        private readonly IProductService _productService;
 
         public ProductController(
             IProductService productService,
             IProductRepository productRepository,
-            IHttpContextAccessor context,
             IAuthorizationService authorizationService
         )
             : base(productService)
         {
             _authorizationService = authorizationService;
             _productRepository = productRepository;
-            _context = context;
+            _productService = productService;
         }
 
         [AllowAnonymous]
@@ -40,8 +40,8 @@ namespace Backend.src.Controllers
         [Authorize(Policy = "SellerOnlyPolicy")]
         public override async Task<ActionResult<ProductReadDto>> AddOne(ProductCreateDto dto)
         {
-            Console.WriteLine(dto.SellerID);
-            return await base.AddOne(dto);
+            var sellerId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            return await _productService.AddOneAsync(dto, sellerId);
         }
 
         public override async Task<ActionResult<ProductReadDto>> UpdateOne(
@@ -55,7 +55,7 @@ namespace Backend.src.Controllers
         public override async Task<ActionResult<bool>> DeleteById(int id)
         {
             var entity = await _productRepository.GetByIdAsync(id);
-            var user = _context.HttpContext!.User;
+            var user = HttpContext.User;
             var authorizationResut = await _authorizationService.AuthorizeAsync(
                 user,
                 entity,
