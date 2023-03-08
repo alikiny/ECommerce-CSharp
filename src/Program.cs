@@ -28,6 +28,7 @@ using Backend.src.Milddlewares;
 using Backend.src.Services.PermissionRequirement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Services;
+using Backend.src.Repository.ProductRepository;
 
 internal class Program
 {
@@ -83,9 +84,10 @@ internal class Program
             .AddScoped<IOrderItemService, OrderItemService>()
             .AddScoped<IReviewService, ReviewService>()
             .AddScoped<IAuthService, AuthService>()
-            .AddScoped<ICategoryService, CategoryService>();
+            .AddScoped<ICategoryService, CategoryService>()
+            .AddScoped<IProductRepository, ProductRepository>();
 
-        builder.Services.AddTransient<IAuthorizationHandler, ProductDeleteRequirementHandler>();
+        builder.Services.AddSingleton<IAuthorizationHandler, ProductDeleteRequirementHandler>();
 
         //builder.Services.AddTransient<LoggingMiddleware>();
 
@@ -94,6 +96,9 @@ internal class Program
 
         //Add DatabaseContext
         builder.Services.AddDbContext<DatabaseContext>();
+
+        //http accessor
+        builder.Services.AddHttpContextAccessor();
 
         // Add authentication service
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

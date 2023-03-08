@@ -1,14 +1,32 @@
+using Backend.src.Repository.ProductRepository;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.src.Controllers
 {
-    public class ProductController : GenericController<Product, ProductReadDto, ProductCreateDto, ProductUpdateDto>
+    public class ProductController
+        : GenericController<Product, ProductReadDto, ProductCreateDto, ProductUpdateDto>
     {
-        public ProductController(IProductService productService) : base(productService)
-        { }
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IProductRepository _productRepository;
+        private readonly IHttpContextAccessor _context;
+
+        public ProductController(
+            IProductService productService,
+            IProductRepository productRepository,
+            IHttpContextAccessor context,
+            IAuthorizationService authorizationService
+        )
+            : base(productService)
+        {
+            _authorizationService = authorizationService;
+            _productRepository = productRepository;
+            _context = context;
+        }
 
         [AllowAnonymous]
-        public override async Task<ActionResult<List<ProductReadDto>>> GetAll([FromQuery] GetAllQueryOptions options)
+        public override async Task<ActionResult<List<ProductReadDto>>> GetAll(
+            [FromQuery] GetAllQueryOptions options
+        )
         {
             return await base.GetAll(options);
         }
@@ -22,13 +40,42 @@ namespace Backend.src.Controllers
         [Authorize(Policy = "SellerOnlyPolicy")]
         public override async Task<ActionResult<ProductReadDto>> AddOne(ProductCreateDto dto)
         {
+            Console.WriteLine(dto.SellerID);
             return await base.AddOne(dto);
         }
 
-        [Authorize(Policy = "ProductDeletePolicy")]
-        public override async Task<ActionResult<ProductReadDto>> UpdateOne(int id, ProductUpdateDto update)
+        public override async Task<ActionResult<ProductReadDto>> UpdateOne(
+            int id,
+            ProductUpdateDto update
+        )
         {
             return await base.UpdateOne(id, update);
+        }
+
+        public override async Task<ActionResult<bool>> DeleteById(int id)
+        {
+            var entity = await _productRepository.GetByIdAsync(id);
+            var user = _context.HttpContext!.User;
+            var authorizationResut = await _authorizationService.AuthorizeAsync(
+                user,
+                entity,
+                "ProductDeletePolicy"
+            );
+            if (authorizationResut.Succeeded)
+            {
+                Console.WriteLine("success");
+                return await base.DeleteById(id);
+            }
+            else if (user.Identity!.IsAuthenticated)
+            {
+                Console.WriteLine("do not have right");
+                Console.WriteLine(user.Identity.Name);
+                return new ForbidResult();
+            }
+            else{
+                Console.WriteLine("challenge");
+                return new ChallengeResult();
+            }
         }
     }
 }
