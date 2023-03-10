@@ -2,7 +2,7 @@ namespace Backend.src.Dto
 {
     public class ProductDtoBase
     {
-        public string Title { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public int Price { get; set; }
         public int CategoryID { get; set; }

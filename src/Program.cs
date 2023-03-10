@@ -17,6 +17,13 @@ global using Backend.src.Dto;
 global using Backend.src.Helpers;
 global using Backend.src.Models;
 global using Backend.src.Data;
+global using Backend.src.Repository.BaseRepository;
+global using Backend.src.Repository.ProductRepository;
+global using Backend.src.Repository.UserRepository;
+global using Backend.src.Repository.CategoryRepository;
+global using Backend.src.Repository.OrderRepository;
+global using Backend.src.Repository.ReviewRepository;
+global using Backend.src.Repository.OrderItemRepository;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -27,8 +34,7 @@ using Backend.src.Services.ReviewService;
 using Backend.src.Milddlewares;
 using Backend.src.Services.PermissionRequirement;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi.Services;
-using Backend.src.Repository.ProductRepository;
+
 
 internal class Program
 {
@@ -40,10 +46,13 @@ internal class Program
         {
             options.ListenLocalhost(5000);
             // Set HTTPS port
-            options.ListenLocalhost(5001, listenOptions =>
-            {
-                listenOptions.UseHttps();
-            });
+            options.ListenLocalhost(
+                5001,
+                listenOptions =>
+                {
+                    listenOptions.UseHttps();
+                }
+            );
         });
         builder.Services.Configure<RouteOptions>(options =>
         {
@@ -55,13 +64,17 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
-            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-            {
-                Description = """Standard authorization using Bearer scheme, Example: "bearer {token}" """,
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
-            });
+            c.AddSecurityDefinition(
+                "oauth2",
+                new OpenApiSecurityScheme
+                {
+                    Description =
+                        """Standard authorization using Bearer scheme, Example: "bearer {token}" """,
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                }
+            );
             /*             c.AddSecurityRequirement(new OpenApiSecurityRequirement
                         {
                             {
@@ -85,7 +98,12 @@ internal class Program
             .AddScoped<IReviewService, ReviewService>()
             .AddScoped<IAuthService, AuthService>()
             .AddScoped<ICategoryService, CategoryService>()
-            .AddScoped<IProductRepository, ProductRepository>();
+            .AddScoped<IProductRepository, ProductRepository>()
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IReviewRepository, ReviewRepository>()
+            .AddScoped<IOrderRepository, OrderRepository>()
+            .AddScoped<ICategoryRepository, CategoryRepository>()
+            .AddScoped<IOrderItemRepository, OrderItemRepository>();
 
         builder.Services.AddSingleton<IAuthorizationHandler, ProductDeleteRequirementHandler>();
 
@@ -101,24 +119,32 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
 
         // Add authentication service
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                ValidateIssuerSigningKey = true,
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!))
-            };
-        });
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        System.Text.Encoding.UTF8.GetBytes(
+                            builder.Configuration.GetSection("AppSettings:Token").Value!
+                        )
+                    )
+                };
+            });
 
         // Add authorization service
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnlyPolicy", policy => policy.RequireRole("Admin"));
             options.AddPolicy("SellerOnlyPolicy", policy => policy.RequireRole("Seller"));
-            options.AddPolicy("ProductDeletePolicy", policy => policy.AddRequirements(new PermissionRequirement()));
+            options.AddPolicy(
+                "ProductDeletePolicy",
+                policy => policy.AddRequirements(new PermissionRequirement())
+            );
         });
 
         var app = builder.Build();

@@ -2,11 +2,11 @@ namespace Backend.src.Services.BaseService
 {
     public interface IBaseService<T, TReadDto, TCreateDto, TUpdateDto>
     {
-        Task<List<TReadDto>> GetAllAsync(GetAllQueryOptions options);
-        Task<TReadDto> GetByIdAsync(int id);
+        Task<IEnumerable<TReadDto>> GetAllAsync(GetAllQueryOptions options);
+        Task<TReadDto?> GetByIdAsync(int id);
         Task<TReadDto> AddOneAsync(TCreateDto dto);
         Task<bool> DeleteByIdAsync(int id);
-        Task<TReadDto> UpdateOneAsync(int id, TUpdateDto? update);
+        Task<TReadDto> UpdateOneAsync(int id, TUpdateDto update);
     }
 
     public class GetAllQueryOptions

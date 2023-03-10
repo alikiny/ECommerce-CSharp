@@ -2,35 +2,18 @@ namespace Backend.src.Services.UserService
 {
     public class UserService : BaseService<User, UserReadDto, UserCreateDto, UserUpdateDto>, IUserService
     {
-        private readonly DatabaseContext _context;
-        private readonly IMapper _mapper;
-
-        public UserService(IMapper mapper, DatabaseContext context) : base(mapper, context)
+        public UserService(IMapper mapper, IUserRepository repository) : base(mapper, repository)
         {
-            _context = context;
-            _mapper = mapper;
         }
 
         public new async Task<UserReadDto> AddOneAsync(UserCreateDto dto)
         {
             ServiceHash.CreateHashData(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            if (CheckEmail(dto.Email)) throw ServiceException.BadRequest("Email is already taken");
             var entity = _mapper.Map<UserCreateDto, User>(dto);
             entity.Password = passwordHash;
             entity.Salt = passwordSalt;
-            await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await _repository.AddOneAsync(entity);
             return _mapper.Map<User, UserReadDto>(entity);
-        }
-
-        private Boolean CheckEmail(string email)
-        {
-            var entity = _context.Users.Where(u => u.Email == email);
-            if (entity.Count() > 0)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

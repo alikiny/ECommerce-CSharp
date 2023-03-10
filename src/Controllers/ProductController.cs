@@ -8,18 +8,15 @@ namespace Backend.src.Controllers
         : GenericController<Product, ProductReadDto, ProductCreateDto, ProductUpdateDto>
     {
         private readonly IAuthorizationService _authorizationService;
-        private readonly IProductRepository _productRepository;
         private readonly IProductService _productService;
 
         public ProductController(
             IProductService productService,
-            IProductRepository productRepository,
             IAuthorizationService authorizationService
         )
             : base(productService)
         {
             _authorizationService = authorizationService;
-            _productRepository = productRepository;
             _productService = productService;
         }
 

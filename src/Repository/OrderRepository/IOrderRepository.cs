@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Backend.src.Repository.ProductRepository
+namespace Backend.src.Repository.OrderRepository
 {
-    public interface IProductRepository: IBaseRepository<Product>
+    public interface IOrderRepository: IBaseRepository<Order>
     {
         
     }
