@@ -35,7 +35,6 @@ using Backend.src.Milddlewares;
 using Backend.src.Services.PermissionRequirement;
 using Microsoft.AspNetCore.Authorization;
 
-
 internal class Program
 {
     private static void Main(string[] args)
@@ -108,6 +107,7 @@ internal class Program
         builder.Services.AddSingleton<IAuthorizationHandler, ProductDeleteRequirementHandler>();
 
         //builder.Services.AddTransient<LoggingMiddleware>();
+        builder.Services.AddTransient<ErrorHandlerMiddleware>();
 
         // Add auto mapper
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -162,6 +162,8 @@ internal class Program
         /*   } */
 
         // app.UseMiddleware<LoggingMiddleware>();
+
+        app.UseErrorHandler();
 
         app.UseLogging();
 
