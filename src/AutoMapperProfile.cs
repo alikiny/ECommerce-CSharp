@@ -17,13 +17,13 @@ namespace Backend.src
             /* dynamically add all the models and dtos */
             var modelTypes = typeof(Program).Assembly.GetTypes()
                 .Where(t => typeof(BaseModel).IsAssignableFrom(t))
-                .ToList();
+                .ToArray();
             var dtoTypes = typeof(Program).Assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Dto"))
-                .ToList();
+                .ToArray();
             foreach (var modelType in modelTypes)
             {
-                var matchTypes = dtoTypes.FindAll(t => 
+                var matchTypes = dtoTypes.Where(t => 
                 t.Name.StartsWith(modelType.Name) &
                 t.Name.EndsWith("Dto") &
                 t.Name != "UserCreateDto");

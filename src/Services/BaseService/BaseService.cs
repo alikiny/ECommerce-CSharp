@@ -1,10 +1,7 @@
-using Backend.src.Helpers;
-
 namespace Backend.src.Services.BaseService
 {
     public class BaseService<T, TReadDto, TCreateDto, TUpdateDto>
-        : IBaseService<T, TReadDto, TCreateDto, TUpdateDto>
-        where T : BaseModel
+        : IBaseService<T, TReadDto, TCreateDto, TUpdateDto> where T : BaseModel
     {
         protected readonly IMapper _mapper;
         protected readonly IBaseRepository<T> _repository;

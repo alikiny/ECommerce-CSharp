@@ -43,9 +43,7 @@ namespace Backend.src.Repository.BaseRepository
         {
             return await _dbSet
                 .AsNoTracking()
-                .AsQueryable()
-                .OrderBy(e => e.UpdatedAt)
-                .ToListAsync();
+                .OrderBy(e => e.UpdatedAt).ToArrayAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
