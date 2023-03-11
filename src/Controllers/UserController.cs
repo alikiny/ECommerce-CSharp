@@ -4,10 +4,8 @@ namespace Backend.src.Controllers
 {
     public class UserController : GenericController<User, UserReadDto, UserCreateDto, UserUpdateDto>
     {
-        private readonly IUserService _service;
         public UserController(IUserService service) : base(service)
         {
-            _service = service;
         }
 
         [Authorize(Policy = "AdminOnlyPolicy")]

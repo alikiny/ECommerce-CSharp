@@ -1,3 +1,4 @@
+using AutoMapper.Internal.Mappers;
 using Npgsql;
 
 namespace Backend.src.Data
@@ -64,6 +65,7 @@ namespace Backend.src.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(e => e.Role).HasColumnType("role");
+                entity.HasIndex(e => e.Email).IsUnique();
             });
 
             /* Configure Order model */
@@ -93,6 +95,8 @@ namespace Backend.src.Data
                     .WithMany()
                     .HasForeignKey(r => r.ProductId)
                     .OnDelete(DeleteBehavior.Cascade);
+                entity
+                    .HasAlternateKey(e=> new {e.OrderId, e.ProductId});
             });
         }
 

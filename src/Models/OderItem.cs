@@ -1,6 +1,6 @@
 namespace Backend.src.Models
 {
-    public class OrderItem : BaseModel
+    public class OrderItem: BaseModel
     {
         public int ProductId { get; set; }
         public Product? Product { get; set; }
