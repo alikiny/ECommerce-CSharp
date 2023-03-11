@@ -32,7 +32,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Backend.src.Services.ReviewService;
 using Backend.src.Milddlewares;
-using Backend.src.Services.PermissionRequirement;
+using Backend.src.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
 internal class Program
@@ -143,7 +143,7 @@ internal class Program
             options.AddPolicy("SellerOnlyPolicy", policy => policy.RequireRole("Seller"));
             options.AddPolicy(
                 "ProductDeletePolicy",
-                policy => policy.AddRequirements(new PermissionRequirement())
+                policy => policy.AddRequirements(new ProductDeleteRequirement())
             );
         });
 

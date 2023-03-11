@@ -1,14 +1,14 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Backend.src.Services.PermissionRequirement
+namespace Backend.src.Authorization
 {
-    public class PermissionRequirement : IAuthorizationRequirement { }
+    public class ProductDeleteRequirement : IAuthorizationRequirement { }
 
-    public class ProductDeleteRequirementHandler : AuthorizationHandler<PermissionRequirement, Product>
+    public class ProductDeleteRequirementHandler : AuthorizationHandler<ProductDeleteRequirement, Product>
     {
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement, Product resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ProductDeleteRequirement requirement, Product resource)
         {
             Console.WriteLine(resource.SellerId.ToString());
             if(context.User.IsInRole(Role.Admin.ToString()))
