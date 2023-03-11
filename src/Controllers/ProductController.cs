@@ -9,15 +9,18 @@ namespace Backend.src.Controllers
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly IProductService _productService;
+        private readonly IProductRepository _productRepository;
 
         public ProductController(
             IProductService productService,
-            IAuthorizationService authorizationService
+            IAuthorizationService authorizationService,
+            IProductRepository productRepository
         )
             : base(productService)
         {
             _authorizationService = authorizationService;
             _productService = productService;
+            _productRepository = productRepository;
         }
 
         [AllowAnonymous]
@@ -60,13 +63,10 @@ namespace Backend.src.Controllers
             );
             if (authorizationResut.Succeeded)
             {
-                Console.WriteLine("success");
                 return await base.DeleteById(id);
             }
             else if (user.Identity!.IsAuthenticated)
             {
-                Console.WriteLine("do not have right");
-                Console.WriteLine(user.Identity.Name);
                 return new ForbidResult();
             }
             else{

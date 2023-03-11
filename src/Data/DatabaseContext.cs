@@ -11,6 +11,7 @@ namespace Backend.src.Data
         public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderItem> OderItems { get; set; } = null!;
 
         static DatabaseContext()
         {
@@ -78,6 +79,21 @@ namespace Backend.src.Data
 
             /* Configure Category model*/
             modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
+
+            /* OrderItem */
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity
+                    .HasOne(r => r.Order)
+                    .WithMany()
+                    .HasForeignKey(r => r.OrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity
+                    .HasOne(r => r.Product)
+                    .WithMany()
+                    .HasForeignKey(r => r.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

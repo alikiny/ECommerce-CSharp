@@ -2,7 +2,7 @@ namespace Backend.src.Dto
 {
     public class CategoryDtoBase
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
     }
 
     public class CategoryCreateDto : CategoryDtoBase
