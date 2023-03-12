@@ -15,5 +15,19 @@ namespace Backend.src.Services.UserService
             await _repository.AddOneAsync(entity);
             return _mapper.Map<User, UserReadDto>(entity);
         }
+
+        public async Task<bool> UpdatePasswordAsync(int id, string newPassword)
+        {
+            ServiceHash.CreateHashData(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+            var user = await _repository.GetByIdAsync(id);
+            if(user is null)
+            {
+                throw ServiceException.NotFound("User is not found");
+            }
+            user.Password = passwordHash;
+            user.Salt = passwordSalt;
+            await _repository.UpdateOneAsync(user);
+            return true;
+        }
     }
 }

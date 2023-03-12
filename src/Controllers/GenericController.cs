@@ -25,47 +25,50 @@ namespace Backend.src.Controllers
             return response;
         }
 
-        [HttpGet("{id}")]
-        public virtual async Task<ActionResult<TReadDto>> GetById(int id)
+        [HttpGet("{id:int}")]
+        public virtual async Task<ActionResult<TReadDto>> GetById([FromRoute] int id)
         {
             var response = await _service.GetByIdAsync(id);
             return Ok(response);
         }
 
         [HttpPatch("{id}")]
-        public virtual async Task<ActionResult<TReadDto>> UpdateOne(int id, TUpdateDto update)
+        public virtual async Task<ActionResult<TReadDto>> UpdateOne(
+            [FromRoute] int id,
+            [FromBody] TUpdateDto update
+        )
         {
             var response = await _service.UpdateOneAsync(id, update);
             return Ok(response);
         }
 
         [HttpPost("")]
-        public virtual async Task<ActionResult<TReadDto>> AddOne(TCreateDto dto)
+        public virtual async Task<ActionResult<TReadDto>> AddOne([FromBody] TCreateDto dto)
         {
             var createdEntity = await _service.AddOneAsync(dto);
             return CreatedAtAction(nameof(AddOne), createdEntity);
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<ActionResult<bool>> DeleteById(int id)
+        public virtual async Task<ActionResult<bool>> DeleteById([FromRoute] int id)
         {
             var response = await _service.DeleteByIdAsync(id);
             return response;
         }
 
-       /*  private ActionResult ErrorHandler(ServiceException ex)
-        {
-            switch (ex.HttpStatusCode)
-            {
-                case HttpStatusCode.BadRequest:
-                    return BadRequest(ex.Message);
-                case HttpStatusCode.Unauthorized:
-                    return Unauthorized(ex.Message);
-                case HttpStatusCode.NotFound:
-                    return NotFound(ex.Message);
-                default:
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        } */
+        /*  private ActionResult ErrorHandler(ServiceException ex)
+         {
+             switch (ex.HttpStatusCode)
+             {
+                 case HttpStatusCode.BadRequest:
+                     return BadRequest(ex.Message);
+                 case HttpStatusCode.Unauthorized:
+                     return Unauthorized(ex.Message);
+                 case HttpStatusCode.NotFound:
+                     return NotFound(ex.Message);
+                 default:
+                     return StatusCode(StatusCodes.Status500InternalServerError);
+             }
+         } */
     }
 }

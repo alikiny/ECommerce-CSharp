@@ -105,6 +105,7 @@ internal class Program
             .AddScoped<IOrderItemRepository, OrderItemRepository>();
 
         builder.Services.AddSingleton<IAuthorizationHandler, ProductDeleteRequirementHandler>();
+        builder.Services.AddSingleton<IAuthorizationHandler, UserUpdateRequirementHandler>();
 
         //builder.Services.AddTransient<LoggingMiddleware>();
         builder.Services.AddTransient<ErrorHandlerMiddleware>();
@@ -145,6 +146,7 @@ internal class Program
                 "ProductDeletePolicy",
                 policy => policy.AddRequirements(new ProductDeleteRequirement())
             );
+            options.AddPolicy("UserUpdatePolicy", policy => policy.AddRequirements(new UserUpdateRequirement()));
         });
 
         var app = builder.Build();

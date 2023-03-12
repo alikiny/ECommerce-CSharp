@@ -10,7 +10,6 @@ namespace Backend.src.Authorization
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ProductDeleteRequirement requirement, Product resource)
         {
-            Console.WriteLine(resource.SellerId.ToString());
             if(context.User.IsInRole(Role.Admin.ToString()))
             {
                 context.Succeed(requirement);
