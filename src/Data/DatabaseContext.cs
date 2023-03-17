@@ -30,74 +30,13 @@ namespace Backend.src.Data
             modelBuilder.HasPostgresEnum<Role>();
             modelBuilder.HasPostgresEnum<Paid>();
             modelBuilder.HasPostgresEnum<Rating>();
-
-            /* Configure Review model */
-            modelBuilder.Entity<Review>(entity =>
-            {
-                entity
-                    .HasOne(r => r.User)
-                    .WithMany()
-                    .HasForeignKey(r => r.UserId)
-                    .OnDelete(DeleteBehavior.SetNull);
-                entity
-                    .HasOne(r => r.Product)
-                    .WithMany()
-                    .HasForeignKey(r => r.ProductId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.Property(e => e.Rating).HasColumnType("rating");
-            });
-
-            /*  Configure Product Model*/
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity
-                    .HasOne(p => p.User)
-                    .WithMany()
-                    .HasForeignKey(p => p.SellerId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity
-                    .HasOne(p => p.Category)
-                    .WithMany()
-                    .HasForeignKey(p => p.CategoryID)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.Property(e => e.Role).HasColumnType("role");
-                entity.HasIndex(e => e.Email).IsUnique();
-            });
-
-            /* Configure Order model */
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity
-                    .HasOne(o => o.User)
-                    .WithMany()
-                    .HasForeignKey(r => r.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.Property(e => e.Status).HasColumnType("paid");
-            });
-
-            /* Configure Category model*/
-            modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
-
-            /* OrderItem */
-            modelBuilder.Entity<OrderItem>(entity =>
-            {
-                entity
-                    .HasOne(r => r.Order)
-                    .WithMany()
-                    .HasForeignKey(r => r.OrderId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity
-                    .HasOne(r => r.Product)
-                    .WithMany()
-                    .HasForeignKey(r => r.ProductId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity
-                    .HasAlternateKey(e=> new {e.OrderId, e.ProductId});
-            });
+            modelBuilder
+                .ApplyConfiguration<User>(new UserConfiguration())
+                .ApplyConfiguration<Product>(new ProductConfiguration())
+                .ApplyConfiguration<Order>(new OrderConfiguration())
+                .ApplyConfiguration<Review>(new ReviewConfiguration())
+                .ApplyConfiguration<OrderItem>(new OrderItemConfiguration())
+                .ApplyConfiguration<Category>(new CatergoryConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -109,7 +48,10 @@ namespace Backend.src.Data
             dataSourceBuilder.MapEnum<Role>("role");
             dataSourceBuilder.MapEnum<Paid>("paid");
             var dataSource = dataSourceBuilder.Build();
-            optionsBuilder.UseNpgsql(dataSource).UseSnakeCaseNamingConvention();
+            optionsBuilder
+                .UseNpgsql(dataSource)
+                .AddInterceptors(new DbInterceptor())
+                .UseSnakeCaseNamingConvention();
         }
     }
 }
