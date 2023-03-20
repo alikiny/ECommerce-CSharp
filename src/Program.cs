@@ -41,18 +41,22 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.WebHost.UseKestrel(options =>
+        if (builder.Environment.IsDevelopment())
         {
-            options.ListenLocalhost(5000);
-            // Set HTTPS port
-            options.ListenLocalhost(
-                5001,
-                listenOptions =>
-                {
-                    listenOptions.UseHttps();
-                }
-            );
-        });
+            builder.WebHost.UseKestrel(options =>
+            {
+                options.ListenLocalhost(5000);
+                // Set HTTPS port
+                options.ListenLocalhost(
+                    5001,
+                    listenOptions =>
+                    {
+                        listenOptions.UseHttps();
+                    }
+                );
+            });
+        }
+
         builder.Services.Configure<RouteOptions>(options =>
         {
             options.LowercaseUrls = true;
@@ -146,7 +150,10 @@ internal class Program
                 "ProductDeletePolicy",
                 policy => policy.AddRequirements(new ProductDeleteRequirement())
             );
-            options.AddPolicy("UserUpdatePolicy", policy => policy.AddRequirements(new UserUpdateRequirement()));
+            options.AddPolicy(
+                "UserUpdatePolicy",
+                policy => policy.AddRequirements(new UserUpdateRequirement())
+            );
         });
 
         var app = builder.Build();
